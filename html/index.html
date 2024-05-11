@@ -25,7 +25,7 @@
 						{{background}}
 					</label>
 					<br>
-					<input type="range" v-model.number="config.margin"> {{ config.margin }} 间距
+					<input type="range" v-model.number="config.margin" :step="1" min="30" max="200"> {{ config.margin }} 间距
 					<hr>
 					<div class="texts">
 						<div class="text" v-for="text in config.texts">
@@ -37,13 +37,23 @@
 							<input type="range" v-model.number="text.borderScale" :step="1" min="0" max="100">
 							{{ text.borderScale }} 边框尺寸
 							<br>
+							<input type="range" v-model.number="text.shadow" :step="1" min="0" max="100">
+							{{ text.borderScale }} shadow
+							<br>
 							<input type="range" v-model.number="text.yShift" :step="1" min="-100" max="100">
 							{{ text.yShift }} yShift
 							<br>
 							<input type="color" v-model="text.color">
+							<input type="color" v-model="text.borderColor">
+							<input type="color" v-model="text.shadowColor">
+
+							
+							<br>
+							<a @click="removeItem(config.texts,text)">删除</a>
 							<hr>
 						</div>
 					</div>
+					<a @click.prevent="addText()">添加文本</a>
 					
 
 					<button type="submit">生成</button>

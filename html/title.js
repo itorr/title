@@ -14,22 +14,25 @@ const fontFamily = '腾祥嘉丽粗圆简';
 
 const ctx = canvas.getContext('2d');
 
+
+
+const textCanvasDrawPadding = 20;
 const generateTextCanvas = config=>{
 	const { text, size, color, borderColor, borderScale } = config;
-	const canvas = document.createElement('canvas');
-	const ctx = canvas.getContext('2d');
 	const fontSize = size;
 	const border = borderScale * fontSize / 100;
 	const borderSize = border * 2;
 
 
+	const canvas = document.createElement('canvas');
+	const ctx = canvas.getContext('2d');
 	ctx.font = `${fontSize}px/${fontSize} ${fontFamily}`;
 
 	canvas.style.cssText = `line-height: ${fontSize}px;`;
 	const textWidth = ctx.measureText(text).width;
 	const textHeight = fontSize;
-	canvas.width = textWidth + borderSize;
-	canvas.height = textHeight + borderSize;
+	canvas.width = textWidth + borderSize + textCanvasDrawPadding * 2;
+	canvas.height = textHeight + borderSize + textCanvasDrawPadding * 2;
 	ctx.font = `${fontSize}px/${fontSize} ${fontFamily}`;
 	ctx.fillStyle = color;
 	ctx.strokeStyle = borderColor;
@@ -38,15 +41,35 @@ const generateTextCanvas = config=>{
 	ctx.lineJoin = 'round';
 	ctx.textBaseline = 'top';
 
-	if(borderScale){
-		ctx.strokeText(text, border, border);
+	ctx.save();
+	const { shadow, shadowColor } = config;
+	if(shadow){
+		ctx.shadowColor = shadowColor;
+		ctx.shadowBlur = shadow;
+		ctx.shadowOffsetX = 0;
+		ctx.shadowOffsetY = 2;
 	}
 
-	ctx.fillText(text, border, border);
+	const padding = textCanvasDrawPadding + border;
+	if(borderScale){
+		ctx.strokeText(text, padding, padding);
+	}
+	ctx.restore();
+
+	ctx.fillText(text, padding, padding);
 
 	
 	return canvas;
 
+}
+
+const getMojiHeight = (config)=>{
+	const { text, size, color, borderColor, borderScale } = config;
+	const fontSize = size;
+	const border = borderScale * fontSize / 100;
+	const borderSize = border * 2;
+
+	return textHeight + borderSize;
 }
 const generateTitleImage = (config)=>{
 	ctx.save();
@@ -77,13 +100,17 @@ const generateTitleImage = (config)=>{
 			0,
 			textY
 		]);
-		textsY += textY +  + textCanvas.height;
+		textsY = textY + textCanvas.height - textCanvasDrawPadding * 2;
 	}
 
 	let index = drawTextCanvasCaches.length;
 	while(index--){
 		const [textCanvas, x, y] = drawTextCanvasCaches[index];
-		ctx.drawImage(textCanvas, x, y);
+		ctx.drawImage(
+			textCanvas, 
+			x - textCanvasDrawPadding, 
+			y - textCanvasDrawPadding
+		);
 	}
 	ctx.restore();
 	return canvas.toDataURL();

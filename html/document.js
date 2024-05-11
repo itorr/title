@@ -1,23 +1,29 @@
 
+const defaultText = Object.freeze(
+	{
+		text: '小标题',
+		size: 80,
+		color: '#FFF',
+		borderScale: 10,
+		borderColor: '#000000',
+		yShift: 0,
+		shadow: 10,
+		shadowColor: 'rgba(0,0,0,.3)',
+	}
+);
+
 const defaultConfig = Object.freeze({
 	margin: 10,
 	texts: [
-		{
-			text: '大标题',
-			size: 140,
-			color: '#FFF',
-			borderScale: 10,
-			borderColor: '#000000',
-			yShift: 0,
-		},
-		{
-			text: '小标题',
-			size: 80,
-			color: '#FFF',
-			borderScale: 10,
-			borderColor: '#000000',
-			yShift: 0,
-		},
+		Object.assign(
+			{},
+			defaultText,
+			{
+				text: '大标题',
+				size: 140,
+			}
+		),
+		Object.assign({},defaultText),
 	]
 });
 
@@ -60,6 +66,23 @@ const app = new Vue({
 			this.timer = setTimeout(()=>{
 				this.generate();
 			}, 100);
+		},
+		removeByIndex(arr, index){
+			arr.splice(index, 1);
+		},
+		removeItem(arr,item){
+			const index = arr.indexOf(item);
+			if(index == -1) return;
+
+			this.removeByIndex(arr, index);
+		},
+		addOne(arr, item){
+			arr.push(item);
+		},
+		addText(){
+			this.addOne(this.config.texts, Object.assign({}, defaultText, {
+				text: `新标题 ${this.config.texts.length + 1}`
+			}));
 		},
 		saveConfig(){
 			sessionStorage.setItem(sesionKey, JSON.stringify(this.config));
