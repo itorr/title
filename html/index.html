@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>标题生成器 - 视频海报字体标题生成器</title>
+
+	<link rel="stylesheet" href="title.css">
+</head>
+<body>
+	<div class="layout">
+		<header class="title">
+			<h1>标题生成器</h1>
+			<p>视频海报字体标题生成器</p>
+		</header>
+		<div class="app">
+			<div class="content">
+				<img id="output" alt="title gen" 
+					:data-background="currentBackground"
+					v-if="outputImageURL"
+				:src="outputImageURL">
+				<form class="input" @submit.prevent="generate()">
+					<label v-for="background in backgrounds" v-key="background">
+						<input type="radio" v-model="currentBackground" :value="background">
+						{{background}}
+					</label>
+					<br>
+					<input type="range" v-model.number="config.margin"> {{ config.margin }} 间距
+					<hr>
+					<div class="texts">
+						<div class="text" v-for="text in config.texts">
+							<input type="text" v-model.lazy="text.text" placeholder="请输入标题">
+							<br>
+							<input type="range" v-model.number="text.size" :step="1" min="30" max="200">
+							{{ text.size }} 大小
+							<br>
+							<input type="range" v-model.number="text.borderScale" :step="1" min="0" max="100">
+							{{ text.borderScale }} 边框尺寸
+							<br>
+							<input type="range" v-model.number="text.yShift" :step="1" min="-100" max="100">
+							{{ text.yShift }} yShift
+							<br>
+							<input type="color" v-model="text.color">
+							<hr>
+						</div>
+					</div>
+					
+
+					<button type="submit">生成</button>
+				</form>
+				<div class="system-config-box">
+					<button @click.prevent="resetConfig()">重置所有选项</button>
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<p>
+				<a href="https://lab.magiconch.com" target="_blank">神奇海螺试验场</a>
+			</p>
+		</div>
+	</div>
+	<script src="../vue.2.6.11.min.js"></script>
+	<script src="title.js"></script>
+	<script src="document.js"></script>
+</body>
+</html>

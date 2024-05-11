@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-Hans-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>标题生成器 - 视频海报字体标题生成器</title>
+
+	<link rel="stylesheet" href="title.css">
+</head>
+<body>
+	<div class="layout">
+		<header class="title">
+			<h1>标题生成器</h1>
+			<p>视频海报字体标题生成器</p>
+		</header>
+		<div class="app">
+			<div class="content">
+				<img id="output" alt="title gen">
+				<form class="input" @submit.prevent="generate()">
+					<input type="text" v-model.lazy="title" placeholder="请输入标题">
+					<button type="submit">生成</button>
+				</form>
+				<div class="options-box">
+						
+					<div class="font-weights">
+						<label v-for="fontWeight,index in fontWeights" :key="index">
+							<input type="radio" v-model="currentFontWeight" :value="fontWeight" :id="`font-weight-${fontWeight}`">
+							<span>{{fontWeight}}</span>
+					</div>
+					<pre>{{JSON.stringify(selectedFontFamilys)}}</pre>
+				</div>
+				<div class="font-familys" :style="`font-weight:${currentFontWeight}`">
+					<div class="font-family-item" v-for="fontFamily,index in fontFamilys"
+						:style="`font-family: ${fontFamily},sans-serif;`"
+						:data-font="`${fontFamily}`">
+
+						<div class="ctrl-box">
+							<span>{{fontFamily}}</span>
+							<a v-if="selectedFontFamilys.includes(fontFamily)" @click="select(fontFamily)">弃选</a>
+							<a v-else @click="select(fontFamily)">选中</a>
+						</div>
+						<div class="text">{{title}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<p>
+				<a href="https://lab.magiconch.com" target="_blank">神奇海螺试验场</a>
+			</p>
+		</div>
+	</div>
+	<script src="../vue.2.6.11.min.js"></script>
+	<script>
+		const fontWeights = Object.freeze([
+	100,
+	200,
+	400,
+	500,
+	600,
+	700,
+	800,
+	1000,
+	1200,
+])
+
+
+
+const app = new Vue({
+	el: '.app',
+	data: {
+		title: 'aA78罢罷备備贝貝笔筆毕畢边邊',
+		fontFamilys: [],
+		fontWeights,
+		currentFontWeight: 400,
+		selectedFontFamilys: [
+
+		]
+	},
+	methods: {
+		generate(){
+
+		},
+		select(fontFamily){
+			if(this.selectedFontFamilys.includes(fontFamily)){
+				this.selectedFontFamilys = this.selectedFontFamilys.filter(f=>f!==fontFamily);
+			}else{
+				this.selectedFontFamilys.push(fontFamily);
+			}
+		}
+	}
+});
+
+
+
+fetch('font-list.json').then(r=>r.json()).then(fontFamilys=>{
+	console.log(fontFamilys);
+	app.fontFamilys = Object.freeze(fontFamilys);
+})
+	</script>
+</body>
+</html>

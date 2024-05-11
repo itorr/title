@@ -1,0 +1,6 @@
+vue.2.6.11.min.js
+node_modules/*
+*.ttf
+build/config.gypi
+*.css
+package-lock.json
